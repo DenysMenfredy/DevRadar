@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Dev  = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
-const { findConnections } = require('../webSocket');
+const { findConnections, sendMessage } = require('../webSocket');
 // index, show, store, update, destroy
 
 module.exports = {
@@ -46,14 +46,11 @@ module.exports = {
                 techsArray,
             )
 
-            
-            console.log(sendSocketMessageTo);
-            
+            sendMessage(sendSocketMessageTo, 'new-dev', dev);
 
-    }
+        }
 
-
-    return response.json(dev);
+        return response.json(dev);
 },
     async update() {
         // nome, avatar, bio, localização, techs

@@ -3,9 +3,10 @@ const connections = [];
 const parseStringAsArray = require('./utils/parseStringAsArray');
 const calculateDistance = require('./utils/calculateDistance');
 
+let io;
 
 exports.setupWebSocket = (server) => {
-    const io = socketio(server);
+    io = socketio(server);
 
     io.on('connection', socket => {
         console.log(socket.id);
@@ -19,6 +20,7 @@ exports.setupWebSocket = (server) => {
             },
             techs: parseStringAsArray(techs),
         });
+        
     }); 
 };
 
@@ -26,5 +28,11 @@ exports.findConnections =  ( coordinates, techs) => {
     return connections.filter(connection => {
         return calculateDistance(coordinates, connection.coordinates) < 10
             && connections.techs.some(item => techs.includes(item));
+    });
+}
+
+exports.sendMessage = (to, message, data) => {
+    to.forEach(connection => {
+        io.to(connection.id).emit(message, data);
     });
 }
